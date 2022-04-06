@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.let.temp.service.impl.TempMapper"> <!-- 이 mapper namespace가 찾아가는 경로이므로 꼭 정확히 명시해야한다. -->
+
+	<resultMap id="temp" type="egovframework.let.temp.service.TempVO">
+		<result property="tempId" column="TEMP_ID"/>
+		<result property="tempVal" column="TEMP_VAL"/>
+	</resultMap>
+	
+	<select id="selectTemp" resultType="tempVO">
+		SELECT TEMP_ID AS TempId, TEMP_VAL AS TempVal FROM LETTEMP WHERE TEMP_ID=#{tempId}
+	</select>
+	
+	<select id="selectTempList" resultType="egovMap">
+		SELECT TEMP_ID, TEMP_VAL FROM LETTEMP
+	</select>
+
+</mapper>
