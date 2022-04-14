@@ -21,4 +21,14 @@ public interface TempMapper {//DAO와 다르게 mapper는 동일 자바파일, �
 	
 	//임시데이터 목록 가져오기
 	List<EgovMap> selectTempList(TempVO vo) throws Exception;
+	
+	//임시데이터 등록
+	void insertTemp(TempVO vo) throws Exception; //삽입,수정,삭제 작업에서는 출력값이 없음.
+	
+	//임시데이터 수정
+	void updateTemp(TempVO vo) throws Exception;
+	
+	//임시데이터 삭제
+	void deleteTemp(TempVO vo) throws Exception;
 }
+

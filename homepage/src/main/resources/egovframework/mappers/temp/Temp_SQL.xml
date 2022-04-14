@@ -14,5 +14,17 @@
 	<select id="selectTempList" resultType="egovMap">
 		SELECT TEMP_ID, TEMP_VAL FROM LETTEMP
 	</select>
+	
+	<insert id="insertTemp" parameterType="tempVO"> <!-- sql-mapper-config.xml에 alias선언 해줘서 풀경로가 아니어도 된다. -->
+		INSERT INTO LETTEMP(TEMP_VAL) VALUES(#{tempVal})
+	</insert>
+	
+	<update id="updateTemp" parameterType="egovframework.let.temp.service.TempVO">
+		UPDATE LETTEMP SET TEMP_VAL=#{tempVal} WHERE TEMP_ID=#{tempId}
+	</update>
+	
+	<delete id="deleteTemp" parameterType="tempVO">
+		DELETE FROM LETTEMP WHERE TEMP_ID=#{tempId}
+	</delete>
 
 </mapper>

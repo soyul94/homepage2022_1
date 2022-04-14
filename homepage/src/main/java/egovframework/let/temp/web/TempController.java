@@ -42,6 +42,7 @@ public class TempController {
 	//임시데이터 가져오기
 	@RequestMapping(value="/temp/select.do")// URI 매핑.
 	public String select(@ModelAttribute("searchVO") TempVO searchVO,HttpServletRequest request, ModelMap model) throws Exception{
+		request.setCharacterEncoding("UTF-8");
 		TempVO result = tempService.selectTemp(searchVO);
 		model.addAttribute("result",result);
 		
@@ -52,6 +53,7 @@ public class TempController {
 	//임시데이터 목록 가져오기
 	@RequestMapping(value="/temp/selectList.do")// URI 매핑.
 	public String selectList(@ModelAttribute("searchVO") TempVO searchVO,HttpServletRequest request, ModelMap model) throws Exception{
+		request.setCharacterEncoding("UTF-8");
 		List<EgovMap> resultList = tempService.selectTempList(searchVO);
 		model.addAttribute("resultList",resultList);
 		
@@ -59,5 +61,44 @@ public class TempController {
 		return "temp/TempSelectList";//jsp파일이 받는 경로
 	}
 	
+	//임시데이터 등록하기
+	@RequestMapping(value="/temp/insert.do")// URI 매핑.
+	public String insert(@ModelAttribute("searchVO") TempVO searchVO,HttpServletRequest request, ModelMap model) throws Exception{
+		request.setCharacterEncoding("UTF-8");
+		tempService.insertTemp(searchVO);
+		
+		System.out.println("컨트롤 호출");			
+		return "forward:/temp/selectList.do";//jsp파일이 받는 경로
+	}
 	
+	//임시데이터 수정하기
+	@RequestMapping(value="/temp/update.do")// URI 매핑.
+	public String update(@ModelAttribute("searchVO") TempVO searchVO, HttpServletRequest request, ModelMap model) throws Exception{
+		tempService.updateTemp(searchVO);
+		return "forward:/temp/selectList.do";
+	}
+	
+	//임시데이터 삭제하기
+	@RequestMapping(value="/temp/delete.do")// URI 매핑.
+	public String delete(@ModelAttribute("searchVO") TempVO searchVO, HttpServletRequest request, ModelMap model) throws Exception{
+		tempService.deleteTemp(searchVO);
+		return "forward:/temp/selectList.do";
+	}
+	
+	
+	//임시데이터 등록을 위해 파라미터 값을 받아들일 폼이 있는 페이지 호출
+	@RequestMapping(value="/temp/tempRegist.do")// URI 매핑.
+	public String tempRegist(@ModelAttribute("searchVO") TempVO tempVO, HttpServletRequest request, ModelMap model) throws Exception{
+		request.setCharacterEncoding("UTF-8");
+		
+		TempVO result= new TempVO();
+		if(!EgovStringUtil.isEmpty(tempVO.getTempId())){
+			result= tempService.selectTemp(tempVO);
+		}
+		model.addAttribute("result",result);
+		
+		return "temp/TempRegist";
+	}
+			
 }
+

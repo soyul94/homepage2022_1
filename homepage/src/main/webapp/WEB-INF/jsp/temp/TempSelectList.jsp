@@ -3,7 +3,7 @@
 <%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
+<!-- 자바에서 받아온 값을 jsp에서 쓸 때 사용하는 양식 -->
 
 <!DOCTYPE html>
 <html>
@@ -23,11 +23,17 @@
 			<c:forEach var="result" items="${resultList}">
 			<tr>
 				<td><c:out value="${result.tempId}"/></td>
-				<td><c:out value="${result.tempVal}"/></td>				
+				<td>
+					<c:url var="viewUrl" value="/temp/select.do">
+						<c:param name="tempId" value="${result.tempId}"/>
+					</c:url>
+					<a href="${viewUrl}"><c:out value="${result.tempVal}"/></a>
+				</td>				
 			</tr>
 			</c:forEach>
 		</tbody>
 	</table>
-	<!-- 자바에서 받아온 값을 jsp에서 쓸 때 사용하는 양식 -->
+	
+	<h4><a href="/temp/tempRegist.do">등록하기</a></h4>
 </body>
 </html>
