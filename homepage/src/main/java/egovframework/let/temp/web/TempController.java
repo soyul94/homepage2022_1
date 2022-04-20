@@ -42,7 +42,6 @@ public class TempController {
 	//임시데이터 가져오기
 	@RequestMapping(value="/temp/select.do")// URI 매핑.
 	public String select(@ModelAttribute("searchVO") TempVO searchVO,HttpServletRequest request, ModelMap model) throws Exception{
-		request.setCharacterEncoding("UTF-8");
 		TempVO result = tempService.selectTemp(searchVO);
 		model.addAttribute("result",result);
 		
@@ -53,7 +52,25 @@ public class TempController {
 	//임시데이터 목록 가져오기
 	@RequestMapping(value="/temp/selectList.do")// URI 매핑.
 	public String selectList(@ModelAttribute("searchVO") TempVO searchVO,HttpServletRequest request, ModelMap model) throws Exception{
-		request.setCharacterEncoding("UTF-8");
+/*		
+		List<EgovMap> resultList = tempService.selectTempList(searchVO);
+		model.addAttribute("resultList",resultList);
+*/		
+		PaginationInfo paginationInfo = new PaginationInfo();
+		
+		paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
+		paginationInfo.setPageSize(searchVO.getPageSize());
+		
+		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		
+		int totCot = tempService.selectTempListCnt(searchVO);
+		
+		paginationInfo.setTotalRecordCount(totCot);
+		model.addAttribute("paginationInfo", paginationInfo);
+		
 		List<EgovMap> resultList = tempService.selectTempList(searchVO);
 		model.addAttribute("resultList",resultList);
 		
@@ -64,7 +81,7 @@ public class TempController {
 	//임시데이터 등록하기
 	@RequestMapping(value="/temp/insert.do")// URI 매핑.
 	public String insert(@ModelAttribute("searchVO") TempVO searchVO,HttpServletRequest request, ModelMap model) throws Exception{
-		request.setCharacterEncoding("UTF-8");
+
 		tempService.insertTemp(searchVO);
 		
 		System.out.println("컨트롤 호출");			
@@ -89,7 +106,6 @@ public class TempController {
 	//임시데이터 등록을 위해 파라미터 값을 받아들일 폼이 있는 페이지 호출
 	@RequestMapping(value="/temp/tempRegist.do")// URI 매핑.
 	public String tempRegist(@ModelAttribute("searchVO") TempVO tempVO, HttpServletRequest request, ModelMap model) throws Exception{
-		request.setCharacterEncoding("UTF-8");
 		
 		TempVO result= new TempVO();
 		if(!EgovStringUtil.isEmpty(tempVO.getTempId())){
@@ -98,6 +114,18 @@ public class TempController {
 		model.addAttribute("result",result);
 		
 		return "temp/TempRegist";
+	}
+	
+	//JSTL
+		@RequestMapping(value="/temp/jstl.do")
+		public String jstl(@ModelAttribute("searchVO") TempVO searchVO, HttpServletRequest request, ModelMap model) throws Exception{
+			return "/temp/Jstl";
+		}
+	
+	//JSTL Import용
+	@RequestMapping(value="/temp/jstlImport.do")
+	public String jstlImport(@ModelAttribute("searchVO") TempVO searchVO, HttpServletRequest request, ModelMap model) throws Exception{
+		return "/temp/JstlImport";
 	}
 			
 }

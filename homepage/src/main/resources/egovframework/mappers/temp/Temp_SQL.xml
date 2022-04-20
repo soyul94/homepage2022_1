@@ -12,7 +12,12 @@
 	</select>
 	
 	<select id="selectTempList" resultType="egovMap">
-		SELECT TEMP_ID, TEMP_VAL FROM LETTEMP
+		<!-- SELECT TEMP_ID, TEMP_VAL FROM LETTEMP -->
+		SELECT TEMP_ID, TEMP_VAL FROM LETTEMP LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+	
+	<select id="selectTempListCnt" resultType="java.lang.Integer">
+		SELECT COUNT(*) CNT FROM LETTEMP
 	</select>
 	
 	<insert id="insertTemp" parameterType="tempVO"> <!-- sql-mapper-config.xml에 alias선언 해줘서 풀경로가 아니어도 된다. -->
