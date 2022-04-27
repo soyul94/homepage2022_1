@@ -130,17 +130,13 @@
 			<version>1.8.1</version>
 		</dependency>
 
-		
 
 		<!-- mysql driver --> 
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.31</version>
-        </dependency>
-       
-
-		
+        </dependency>		
 
 		<!-- log4jdbc driver -->  
         <dependency>
