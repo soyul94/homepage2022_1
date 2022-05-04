@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.let.btCRUD.service.impl.BtCrudMapper"> <!-- 이 mapper namespace가 찾아가는 경로이므로 꼭 정확히 명시해야한다. -->
+
+	<resultMap id="btCrud" type="egovframework.let.btCRUD.service.BtCrudVO">
+		<result property="crudId" column="CRUD_ID"/>
+		<result property="crudSj" column="CRUD_SJ"/>
+		<result property="crudCn" column="CRUD_CN"/>
+		<result property="crudNm" column="USER_NM"/>
+		<result property="crudPnttm" column="FRST_REGIST_PNTTM"/>
+		<result property="date" column="DATE_FORMAT"/>
+	</resultMap>
+	
+	<select id="selectBtCrud" resultType="egovframework.let.btCRUD.service.BtCrudVO">
+		SELECT CRUD_ID AS crudId, CRUD_SJ AS crudSj, CRUD_CN AS crudCn, USER_NM AS crudNm, 
+			   DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') AS crudPnttm
+		FROM LETCRUD WHERE CRUD_ID=#{crudId}
+	</select>
+	
+	<select id="selectBtCrudList" resultType="egovMap">
+		<!-- SELECT TEMP_ID, TEMP_VAL FROM LETTEMP -->
+		SELECT CRUD_ID, CRUD_SJ, CRUD_CN, USER_NM AS crudNm, DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') AS date 
+		FROM LETCRUD ORDER BY CRUD_ID DESC LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select>
+	
+	<select id="selectBtCrudListCnt" resultType="java.lang.Integer">
+		SELECT COUNT(*) CNT FROM LETCRUD
+	</select>
+	
+	<insert id="insertBtCrud" parameterType="egovframework.let.btCRUD.service.BtCrudVO"> 
+		INSERT INTO LETCRUD(CRUD_ID,CRUD_SJ,CRUD_CN,USER_NM,FRST_REGIST_PNTTM) 
+		VALUES(#{crudId},#{crudSj},#{crudCn},#{crudNm},SYSDATE())
+	</insert>
+	
+	<update id="updateBtCrud" parameterType="egovframework.let.btCRUD.service.BtCrudVO">
+		UPDATE LETCRUD 
+		SET CRUD_SJ=#{crudSj}, CRUD_CN=#{crudCn}, USER_NM=#{crudNm}, FRST_REGIST_PNTTM=SYSDATE() 
+		WHERE CRUD_ID=#{crudId}
+	</update>
+	
+	<delete id="deleteBtCrud" parameterType="egovframework.let.btCRUD.service.BtCrudVO">
+		DELETE FROM LETCRUD WHERE CRUD_ID=#{crudId}
+	</delete>
+
+</mapper>
