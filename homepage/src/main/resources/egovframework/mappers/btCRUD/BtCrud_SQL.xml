@@ -13,13 +13,13 @@
 	
 	<select id="selectBtCrud" resultType="egovframework.let.btCRUD.service.BtCrudVO">
 		SELECT CRUD_ID AS crudId, CRUD_SJ AS crudSj, CRUD_CN AS crudCn, USER_NM AS crudNm, 
-			   DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') AS crudPnttm
+			   FRST_REGIST_PNTTM AS crudPnttm
 		FROM LETCRUD WHERE CRUD_ID=#{crudId}
 	</select>
 	
 	<select id="selectBtCrudList" resultType="egovMap">
 		<!-- SELECT TEMP_ID, TEMP_VAL FROM LETTEMP -->
-		SELECT CRUD_ID, CRUD_SJ, CRUD_CN, USER_NM AS crudNm, DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') AS date 
+		SELECT CRUD_ID, CRUD_SJ, CRUD_CN, USER_NM AS CRUD_NM, FRST_REGIST_PNTTM AS CRUD_PNTTM
 		FROM LETCRUD ORDER BY CRUD_ID DESC LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 	</select>
 	

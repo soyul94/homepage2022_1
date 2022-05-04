@@ -1,6 +1,7 @@
 package egovframework.let.btCRUD.service;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -13,7 +14,7 @@ public class BtCrudVO extends ComDefaultVO implements Serializable {
 	private String crudSj;
 	private String crudCn;
 	private String crudNm;
-	private String crudPnttm;
+	private Date crudPnttm;
 
 	
 	public String getCrudId() {
@@ -40,11 +41,12 @@ public class BtCrudVO extends ComDefaultVO implements Serializable {
 	public void setCrudNm(String crudNm) {
 		this.crudNm = crudNm;
 	}
-	public String getCrudPnttm() {
+	public Date getCrudPnttm() {
 		return crudPnttm;
 	}
-	public void setCrudPnttm(String crudPnttm) {
+	public void setCrudPnttm(Date crudPnttm) {
 		this.crudPnttm = crudPnttm;
 	}
+	
 	
 }

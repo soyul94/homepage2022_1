@@ -41,7 +41,7 @@
 					<c:out value="${result.crudNm}"/>
 				</td>
 				<td>
-					<c:out value="${result.date}"/>
+					<fmt:formatDate value="${result.crudPnttm}" pattern="yyyy.MM.dd"/>
 				</td>
 				<td>
 					<c:url var="delUrl" value="/btCRUD/delete.do">
