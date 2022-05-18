@@ -18,10 +18,9 @@
 	</select>
 	
 	<select id="selectBtCrudList" resultType="egovMap">
-		<!-- SELECT TEMP_ID, TEMP_VAL FROM LETTEMP -->
 		SELECT CRUD_ID, CRUD_SJ, CRUD_CN, USER_NM AS CRUD_NM, FRST_REGIST_PNTTM AS CRUD_PNTTM
 		FROM LETCRUD ORDER BY CRUD_ID DESC LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
-	</select>
+	</select> 
 	
 	<select id="selectBtCrudListCnt" resultType="java.lang.Integer">
 		SELECT COUNT(*) CNT FROM LETCRUD

@@ -43,8 +43,8 @@ public class BtCRUDController {
 	
 	//임시데이터 가져오기
 	@RequestMapping(value="/btCRUD/select.do")// URI 매핑.
-	public String select(@ModelAttribute("searchVO") BtCrudVO searchVO,HttpServletRequest request, ModelMap model) throws Exception{
-		BtCrudVO result = btCrudService.selectBtCrud(searchVO);
+	public String select(@ModelAttribute("searchVO") BtCrudVO btCrudVO,HttpServletRequest request, ModelMap model) throws Exception{
+		BtCrudVO result = btCrudService.selectBtCrud(btCrudVO);
 		model.addAttribute("result",result);
 		
 		System.out.println("select 컨트롤 호출");			
