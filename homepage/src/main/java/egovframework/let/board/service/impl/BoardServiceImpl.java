@@ -36,14 +36,29 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 	@Resource(name="egovBoardIdGnrService") //context-idgen.xml에 추가한 bean을 연결하는 것
 	private EgovIdGnrService idgenService;
 	
-	//임시데이터 목록 가져오기
+	//
+	public BoardVO selectBoard(BoardVO vo) throws Exception {
+		return null;
+	}
+	
+	//게시물 목록 가져오기
 	public List<EgovMap> selectBoardList(BoardVO vo) throws Exception{
 		return boardMapper.selectBoardList(vo);
 	}
 	
-	//임시데이터 목록 수
+	//게시물 목록 수
 	public int selectBoardListCnt(BoardVO vo) throws Exception{
 		return boardMapper.selectBoardListCnt(vo);
 	}
+
+
+	//게시물 등록
+	public String insertBoard(BoardVO vo) throws Exception{
+		String id = idgenService.getNextStringId();
+		vo.setBoardId(id);
+		boardMapper.insertBoard(vo);
+		
+		return id;
+	}	
 	
 }
