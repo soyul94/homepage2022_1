@@ -2,6 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="egovframework.let.board.service.impl.BoardMapper"> <!-- 이 mapper namespace가 찾아가는 경로이므로 꼭 정확히 명시해야한다. -->
 
+	<resultMap id="boardVO" type="egovframework.let.board.service.BoardVO">
+		<result property="boardId" column="BOARD_ID"/>
+		<result property="boardSj" column="BOARD_SJ"/>
+		<result property="boardCn" column="BOARD_CN"/>
+		<result property="inqireCo" column="INQIRE_CO"/>
+		<result property="creatIp" column="CREAT_IP"/>
+		<result property="noticeAt" column="NOTICE_AT"/>
+		<result property="othbcAt" column="OTHBC_AT"/>
+		<result property="useAt" column="USE_AT"/>
+		<result property="atchFileId" column="ATCH_FILE_ID"/>
+		<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+	</resultMap>
+
+
+	<select id="selectBoard" resultMap="boardVO">
+		SELECT
+			BOARD_ID,
+			BOARD_SJ,
+			BOARD_CN,
+			INQIRE_CO,
+			CREAT_IP,
+			NOTICE_AT,
+			OTHBC_AT,
+			USE_AT,
+			ATCH_FILE_ID,
+			FRST_REGIST_PNTTM,
+			FRST_REGISTER_ID
+		FROM BOARD 
+		WHERE BOARD_ID=#{boardId} AND USE_AT='Y'		
+	</select>
+
+
 	<select id="selectBoardList" resultType="egovMap">
 		SELECT
 			A.BOARD_ID,
@@ -24,10 +57,12 @@
 		</if>
 	</select>
 	
+	
 	<select id="selectBoardListCnt" resultType="java.lang.Integer">
 		SELECT COUNT(*) FROM BOARD A
 		<include refid="selectBoardListWhere"/>
 	</select>
+
 
 	<sql id="selectBoardListWhere">
 		<where>
@@ -41,19 +76,28 @@
 						<choose>
 							<when test='searchCondition == "0"'>
 								AND A.BOARD_SJ LIKE CONCAT('%',#{serchKeyword},'%')
+								<!-- #{}변수로 값을 넣어야해서 CONCAT을 이용하여 하나의 문자열로 만듬 -->
 							</when>
 							<when test='searchCondition == "1"'>
 								AND A.BOARD_CN LIKE CONCAT('%',#{serchKeyword},'%')
 							</when>
 							<when test='searchCondition == "2"'>
 								AND A.FRST_REGISTER_ID LIKE CONCAT('%',#{serchKeyword},'%')
+							<!-- LIKE '%000%' 으로 양 옆에 %를 붙여 사용하면 검색 정확도는 높으나 쿼리 처리가 매우 느림 -->
 							</when>
 						</choose>
+						<!-- 전체 검색은 있는 조건을 모두 OR연산 해준 것. -->
 					</if>
 				</otherwise>
 			</choose>
 		</where>
 	</sql>
+	
+	
+	<update id="updateViewCnt" parameterType="egovframework.let.board.service.BoardVO">
+		UPDATE BOARD SET INQIRE_CO = INQIRE_CO+1
+		WHERE BOARD_ID = #{boardId}
+	</update>
 	
 	
 	<insert id="insertBoard" parameterType="egovframework.let.board.service.BoardVO">
@@ -87,4 +131,33 @@
 			#{userId}
 		)
 	</insert>
+	
+	
+	<update id="updateBoard" parameterType="egovframework.let.board.service.BoardVO">
+		update BOARD set
+			BOARD_SJ=#{boardSj},
+			BOARD_CN=#{boardCn},
+			NOTICE_AT=#{noticeAt},
+			OTHBC_AT=#{othbcAt},
+			<if test='atchFileId != null and atchFileId !=""'>
+				ATCH_FILE_ID=#{atchFileId},
+			</if>
+			LAST_UPDT_PNTTM=NOW(),
+			LAST_UPDUSR_ID=#{userId}
+		where BOARD_ID=#{boardId}
+		<if test='mngAt != "Y"'> <!-- 타 아이디가 접근해서 삭제하지 못하도록 방지 (3차 방어) -->
+			and FRST_REGISTER_ID=#{userId}
+		</if>
+	</update>
+	
+	
+	<delete id="deleteBoard" parameterType="egovframework.let.board.service.BoardVO">
+		<!-- DELETE FROM BOARD WHERE BOARD_ID=#{userId} -->
+		update BOARD set USE_AT = 'N'
+		where BOARD_ID = #{boardId}
+		<if test='mngAt != "Y"'>
+			and FRST_REGISTER_ID = #{userId}
+		</if>
+	</delete>
+	
 </mapper>

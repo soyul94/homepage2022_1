@@ -4,84 +4,89 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!-- 자바에서 받아온 값을 jsp에서 쓸 때 사용하는 양식 -->
+
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>여기가 BtCrudSelect.jsp</title>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script> <!-- url주소에서 가장 최신의 제이쿼리를 불러옴 -->
-	<style>
-		table{
-			border: 2px solid darkgray;
-			border-collapse: collapse;
-			margin: 10px;
-			padding: 10px;
-			width : 700px;
-			height: 385px;
-	
-		}
-		th,td{
-			border: 2px solid darkgray;
-			height: 15px;
-		}
-		th{
-			font-size: 1em;
-			color: white;
-			background: gray;
-			padding: 5px 10px; 
-			text-align: center;
-		}
-		td{
-			padding: 2px 10px; 
-		}
-	</style>
+<meta http-equiv="Content-Language" content="ko" >
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>여기는 BoardSelect.jsp이다</title>
+<!-- BBS Style -->
+<link href="/asset/BBSTMP_0000000000001/style.css" rel="stylesheet" />
+<!-- 공통 Style -->
+<link href="/asset/LYTTMP_0000000000000/style.css" rel="stylesheet" />
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
-게시물 ID : <c:out value="${result.crudId}"/> 
-	<table>
-	  <tr>
-	    <th style="width : 100px; height: 15px;">제목</th>
-	    <td>${result.crudSj}</td>
-	  </tr>
-	  <tr>
-	  	<th style="height: 15px;">작성자</th>
-	    <td>${result.crudNm}</td>
-	  </tr>
-	  <tr>
-	  	<th style="height: 15px;">작성일</th>
-	    <td><fmt:formatDate value="${result.crudPnttm}" pattern="yyyy년  MM월 dd일   hh:mm"/></td>
-	  </tr>
-	  <tr>
-	  	<th style="height: 300px;">내용</th>
-	    <td>${result.crudCn}</td>
-	  </tr>
-	</table>
 
-	
-	<div class="box-btn">
-		<c:url var="uptUrl" value="/btCRUD/btCrudRegist.do">
-		<c:param name="crudId" value="${result.crudId}"/>
-		</c:url>
-		<a href="${uptUrl}">수정</a>
-		
-		<c:url var="delUrl" value="/btCRUD/delete.do">
-		<c:param name="crudId" value="${result.crudId}"/>
-		</c:url>
-		<a href="${delUrl}" class="btn-del">삭제</a>
-		
-		<a href="/btCRUD/selectList.do">취소</a>
+<%-- 기본 URL --%>
+<c:url var="_BASE_PARAM" value="">
+	<c:param name="menuNo" value="50" />
+	<c:param name="pageIndex" value="${searchVO.pageIndex}" />
+	<c:if test="${not empty searchVO.searchCondition}">		
+		<c:param name="searchKeyword" value="${searchVO.searchCondition}" />
+	</c:if>
+	<c:if test="${not empty searchVO.searchKeyword}">		
+		<c:param name="searchKeyword" value="${searchVO.searchKeyword}" />
+	</c:if>
+</c:url>
+
+<div class="container">
+	<div id="contents">
+		<div id="bbs_wrap">
+			<div class="board_view">
+				<dl class="tit_view">
+					<dt>제목</dt>
+					<dd><c:out value="${result.boardSj}"/></dd>
+				</dl>
+				<dl class="info_view2">
+					<dt>작성자ID</dt>
+					<dd><c:out value="${result.frstRegisterId}"/></dd>
+					<dt>작성일</dt>
+					<dd><fmt:formatDate value="${result.frstRegistPnttm}" pattern="yyyy-MM-dd"/></dd>
+					<dt>조회수</dt>
+					<dd><c:out value="${result.inqireCo}"/></dd>
+				</dl>
+				<div class="view_cont">
+					<c:out value="${result.boardCn}" escapeXml="fales" />
+				</div>
+			</div>
+			<div class="btn-cont ar">
+				<c:choose>
+					<c:when test="${not empty searchVO.boardId}">
+						<c:url var="uptUrl" value="/board/boardRegist.do${_BASE_PARAM}">
+							<c:param name="boardId" value="${result.boardId}"></c:param>
+						</c:url>
+						<a href="${uptUrl}" class="btn">수정</a>
+						
+						<c:url var="delUrl" value="/board/delete.do${_BASE_PARAM}">
+							<c:param name="boardId" value="${result.boardId}"></c:param>
+						</c:url>
+						<a href="${delUrl}" id="btn-del" class="btn"><i class="ico-del"></i> 삭제</a>
+					</c:when>
+					<c:otherwise>
+						<a gref="none" id="btn-reg" class="btn spot">등록</a>
+					</c:otherwise>
+				</c:choose>
+					<c:url var="listUrl" value="/board/selectList.do${_BASE_PARAM}" />
+					<a href="${listUrl}" class="btn">목록</a>
+			</div>
+		</div>
 	</div>
-	
-	<script>
-		$(document).ready(function(){
-			$(".btn-del").click(function(){
-				if(!confirm("삭제하시겠습니까 ?")){
-					return false;
-				} //confirm : 상단에 경고창 뜸
-			});
+</div>
+
+<script>
+	$(document).ready(function(){
+		//게시글 삭제
+		$("#btn-del").click(function(){
+			if(!confirm("삭제하시겠습니까 ? ")){
+				return false;
+			}
 		});
-	</script>
-	
+	});
+</script>
+
 </body>
 </html>

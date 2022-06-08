@@ -97,10 +97,11 @@
 						<c:forEach var="result" items="${resultList}" varStatus="status">
 							<tr>
 								<td class="num">
+									<%--게시판은 가장 상단이 최신글이다. 즉, 게시글은 등록 역순으로 나열함. 아래는 그를 위한 공식. 사용처가 매우 많기 때문에 매우 중요 --%>
 									<c:out value="${paginationInfo.totalRecordCount-((searchVO.pageIndex-1)*searchVO.pageUnit)-(status.count-1)}"/>
 								</td>
 								<td class="tit">
-									<c:url var="viewUrl" value=".board/select.do${_BASE_PARAM}">
+									<c:url var="viewUrl" value="/board/select.do${_BASE_PARAM}">
 										<c:param name="boardId" value="${result.boardId}"/>
 										<c:param name="pageIndex" value="${searchVO.pageIndex}"/>
 									</c:url>
@@ -139,7 +140,7 @@
 		</div>
 		<div class="btn-cont ar">
 			<a href="/board/boardRegist.do" class="btn spot">
-				<i class="ico-check-spot"></i>글쓰기
+				<i class="ico-check-spot"></i> 글쓰기
 			</a>
 		</div>
 	</div>

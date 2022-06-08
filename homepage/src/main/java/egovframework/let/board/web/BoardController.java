@@ -43,31 +43,55 @@ public class BoardController {
 	@Resource(name="boardService")
 	private BoardService boardService;
 	
+	//게시물 가져오기
+	@RequestMapping(value="/board/select.do")
+	public String BoardSelect(@ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
+		
+		System.out.println("select.do 컨트롤 호출");	
+		
+		LoginVO user= (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		model.addAttribute("USER_INFO",user);
+		
+		BoardVO result= boardService.selectBoard(boardVO);
+		
+		//비밀글 여부 체크
+		if("Y".equals(result.getOthbcAt())) {
+			//본인 및 관리자만 허용
+			if(user==null || user.getId()==null || (!user.getId().equals(result.getFrstRegisterId()) && !"admin".equals(user.getId()))) {
+				model.addAttribute("message","작성자 본인만 확인 가능합니다.");
+				return "forward:/board/selectList.do";
+			}
+		}
+		model.addAttribute("result", result);
+		return "board/BoardSelect";
+	}
 	
-	//임시데이터 목록 가져오기
+	
+	//게시글 목록 가져오기
 	@RequestMapping(value="/board/selectList.do")// URI 매핑.
-	public String selectList(@ModelAttribute("searchVO") BoardVO searchVO, HttpServletRequest request, ModelMap model) throws Exception{
-	
+	public String BoardSelectList(@ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
+		
+		System.out.println("selectList 컨트롤 호출");	
 		//공지 게시글
-		searchVO.setNoticeAt("Y");
-		List<EgovMap> noticeResultList= boardService.selectBoardList(searchVO);
+		boardVO.setNoticeAt("Y");
+		List<EgovMap> noticeResultList= boardService.selectBoardList(boardVO);
 		model.addAttribute("noticeResultList",noticeResultList);
 		
 		PaginationInfo paginationInfo = new PaginationInfo();
 		
-		paginationInfo.setCurrentPageNo(searchVO.getPageIndex());
-		paginationInfo.setRecordCountPerPage(searchVO.getPageUnit());
-		paginationInfo.setPageSize(searchVO.getPageSize());
+		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+		paginationInfo.setPageSize(boardVO.getPageSize());
 		
-		searchVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
-		searchVO.setLastIndex(paginationInfo.getLastRecordIndex());
-		searchVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
+		boardVO.setFirstIndex(paginationInfo.getFirstRecordIndex());
+		boardVO.setLastIndex(paginationInfo.getLastRecordIndex());
+		boardVO.setRecordCountPerPage(paginationInfo.getRecordCountPerPage());
 		
-		searchVO.setNoticeAt("N");
-		List<EgovMap> resultList= boardService.selectBoardList(searchVO);
+		boardVO.setNoticeAt("N");
+		List<EgovMap> resultList= boardService.selectBoardList(boardVO);
 		model.addAttribute("resultList",resultList);
 		
-		int totCot = boardService.selectBoardListCnt(searchVO);
+		int totCot = boardService.selectBoardListCnt(boardVO);
 		
 		paginationInfo.setTotalRecordCount(totCot);
 		model.addAttribute("paginationInfo", paginationInfo);
@@ -84,6 +108,8 @@ public class BoardController {
 	@RequestMapping(value="/board/boardRegist.do")
 	public String boardRegist(@ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
 		
+		System.out.println("boardRegist.do 컨트롤 호출");	
+		
 		//세션과 쿠키 공부하고 다시보기
 		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 		if(user==null||user.getId()==null) {
@@ -96,12 +122,12 @@ public class BoardController {
 		
 		BoardVO result = new BoardVO();
 		if(!EgovStringUtil.isEmpty(boardVO.getBoardId())) {
-			/*result = boardService.selectBoard(boardVO);
+			result = boardService.selectBoard(boardVO);
 			//본인 및 관리자만 허용
 			if(!user.getId().equals(result.getFrstRegisterId()) && !"admin".equals(user.getId())) {
 				model.addAttribute("message", "작성자 본인만 확인 가능합니다.");
 				return "forward:/board/selectList.do";
-			}*/
+			}
 		}
 		model.addAttribute("result",result);
 		
@@ -110,6 +136,7 @@ public class BoardController {
 		
 		return "board/BoardRegist";
 	}
+	
 	
 	//입력받은 게시물 등록하는 메소드
 	@RequestMapping(value="/board/insert.do")
@@ -137,7 +164,59 @@ public class BoardController {
 		
 		return "forward:/board/selectList.do";	
 	}
+	
+	
+	//게시물 수정하는 메소드
+	@RequestMapping(value="/board/update.do")
+	public String boardUpdate(@ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
 		
+		System.out.println("update.do 컨트롤 호출");	
+		
+		//이중 서브밋 방지
+		if(request.getSession().getAttribute("sessionBoard") != null){
+			return "forward:/board/selectList.do";
+		}
+		
+		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		if(user==null || user.getId()==null) {
+			model.addAttribute("message", "로그인 후 사용가능합니다.");
+			return "forward:/board/selectList.do";
+		}
+		else if("admin".equals(user.getId())) {
+			boardVO.setMngAt("Y");
+		}
+		
+		boardVO.setUserId(user.getId());
+		
+		boardService.updateBoard(boardVO);
+		
+		//이중 서브밋 방지 : boardService.insertBoard(boardVO)를 수행 후 해당 정보를 session에 저장함
+		request.getSession().setAttribute("sessionBoard", boardVO);
+		
+		return "forward:/board/selectList.do";	
+	}
+	
+	
+	//게시물 삭제
+	@RequestMapping(value="/board/delete.do")
+	public String boardDelete(@ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
+		
+		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		if(user==null || user.getId()==null) {
+			model.addAttribute("message", "로그인 후 사용가능합니다.");
+			return "forward:/board/selectList.do";
+		}
+		else if("admin".equals(user.getId())) {
+			boardVO.setMngAt("Y");
+		}
+		
+		boardVO.setUserId(user.getId());
+		
+		boardService.deleteBoard(boardVO);
+		
+		return "forward:/board/selectList.do";	 		
+	}
+
 			
 }
 

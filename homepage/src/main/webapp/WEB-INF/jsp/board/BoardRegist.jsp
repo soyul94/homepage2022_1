@@ -32,7 +32,7 @@
 <div class="container">
 	<div id="contents">			<%-- onsubmit : 스크립트 함수를 실행하여 해당 함수의 결과 값이 true이면 form을 submit함 유효성 검사할 때 주로 사용된다. --%>
 		<form action="${actionUrl}" method="post" id="frm" name="frm" onsubmit="return regist()">
-			<input type="hidden" name="boardId" value="result.boardId"/>
+			<input type="hidden" name="boardId" value="${result.boardId}"/>
 			
 			<table class="chart2">
 				<caption>게시글 작성</caption> <%-- caption : 표의 정보(설명글) : 장애인들을 위해 사용되며 상세하게 기록되어야한다. --%>
