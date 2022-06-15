@@ -99,6 +99,8 @@
 								<td class="num">
 									<%--게시판은 가장 상단이 최신글이다. 즉, 게시글은 등록 역순으로 나열함. 아래는 그를 위한 공식. 사용처가 매우 많기 때문에 매우 중요 --%>
 									<c:out value="${paginationInfo.totalRecordCount-((searchVO.pageIndex-1)*searchVO.pageUnit)-(status.count-1)}"/>
+									<%--             게시물의 총 개수                                           -((현재 페이지-1)           *한 페이지에 표시될 게시물 수)-(forEach 루틴 수 -1)--%>
+									<%--<c:forEach>의 varStatus="변수명" 속성: forEach의 변수. 각 forEach마다 다른 이름이어야한다.  --%>
 								</td>
 								<td class="tit">
 									<c:url var="viewUrl" value="/board/select.do${_BASE_PARAM}">

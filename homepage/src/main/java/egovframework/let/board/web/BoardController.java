@@ -6,6 +6,8 @@ import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.service.EgovCmmUseService;
+import egovframework.com.cmm.service.EgovFileMngService;
+import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.let.board.service.BoardService;
 import egovframework.let.board.service.BoardVO;
@@ -17,7 +19,7 @@ import egovframework.let.cop.bbs.service.EgovBBSAttributeManageService;
 import egovframework.let.temp2.service.Temp2Service;
 import egovframework.let.temp2.service.Temp2VO;
 import egovframework.let.utl.fcc.service.EgovStringUtil;
-
+import egovframework.let.utl.fcc.service.FileMngUtil;
 import egovframework.rte.fdl.cmmn.exception.EgovBizException;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.psl.dataaccess.util.EgovMap;
@@ -34,6 +36,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springmodules.validation.commons.DefaultBeanValidator;
 
 
@@ -42,6 +46,13 @@ public class BoardController {
 	
 	@Resource(name="boardService")
 	private BoardService boardService;
+	
+	@Resource(name="EgovFileMngService")
+	private EgovFileMngService fileMngService;
+	
+	@Resource(name="fileMngUtil")
+	private FileMngUtil fileUtil;
+	
 	
 	//게시물 가져오기
 	@RequestMapping(value="/board/select.do")
@@ -140,7 +151,7 @@ public class BoardController {
 	
 	//입력받은 게시물 등록하는 메소드
 	@RequestMapping(value="/board/insert.do")
-	public String boardInsert(@ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
+	public String boardInsert(final MultipartHttpServletRequest multiRequest, @ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
 	
 		//이중 서브밋 방지 체크 : boardService.insertBoard를 수행 후 sessionBoard에 값이 저장되므로 이를 확인해서 중복 서브밋인지 감별함
 		if(request.getSession().getAttribute("sessionBoard") != null){
@@ -154,7 +165,21 @@ public class BoardController {
 			return "forward:/board/selectList.do";		//보통 이 경우는 로그인 페이지로 이동시킴	
 		}
 		
-		boardVO.setCreatIp(request.getRemoteAddr()); //현재 작성자 기준의 IP를 불러옴(공인IP에 대한 정보)
+		//첨부파일
+		List<FileVO> result = null;
+		String atchFileId= "";
+		
+		final Map<String, MultipartFile> files = multiRequest.getFileMap();
+		if(!files.isEmpty()) {
+			result = fileUtil.parseFileInf(files, "BOARD_", 0, "", "board.fileStorePath");
+			atchFileId = fileMngService.insertFileInfs(result);
+		}
+		
+		boardVO.setAtchFileId(atchFileId);
+		
+		
+		//현재 작성자 기준의 IP를 불러옴(공인IP에 대한 정보)
+		boardVO.setCreatIp(request.getRemoteAddr()); 
 		boardVO.setUserId(user.getId());
 		
 		boardService.insertBoard(boardVO);
@@ -168,7 +193,7 @@ public class BoardController {
 	
 	//게시물 수정하는 메소드
 	@RequestMapping(value="/board/update.do")
-	public String boardUpdate(@ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
+	public String boardUpdate(final MultipartHttpServletRequest multiRequest, @ModelAttribute("searchVO") BoardVO boardVO, HttpServletRequest request, ModelMap model) throws Exception{
 		
 		System.out.println("update.do 컨트롤 호출");	
 		

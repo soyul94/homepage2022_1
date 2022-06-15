@@ -17,6 +17,87 @@
 <!-- 공통 Style -->
 <link href="/asset/LYTTMP_0000000000000/style.css" rel="stylesheet" />
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<script src="https://cdn.tiny.cloud/1/d9bg1z8hykkmjqup2wdpt0bdpvdkdhylkw1sjas32wikscmd/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+$(function(){
+	//tinymce의 기본 기능
+    var plugins = [
+        "advlist", "autolink", "lists", "link", "image", "charmap", "print", "preview", "anchor",
+        "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table",
+        "paste", "code", "help", "wordcount", "save"
+    ];
+    
+    //에디터의 툴바에 들어갈 기능을 나열. 이때 '|'는 아이콘 분리이다.
+    var edit_toolbar = 'formatselect fontselect fontsizeselect |'
+               + ' forecolor backcolor |'
+               + ' bold italic underline strikethrough |'
+               + ' alignjustify alignleft aligncenter alignright |'
+               + ' bullist numlist |'
+               + ' table tabledelete |'
+               + ' link image';
+
+    tinymce.init({
+    	language: "ko_KR", 	  //한글판으로 변경
+        selector: '#boardCn', //에디터가 붙을 위치를 지정함
+        height: 500,
+        menubar: false,
+        plugins: plugins,
+        toolbar: edit_toolbar,
+        
+        /*** image upload ***/
+        image_title: true,
+        /* enable automatic uploads of images represented by blob or data URIs*/
+        automatic_uploads: true,
+        /*
+            URL of our upload handler (for more details check: https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_url)
+            images_upload_url: 'postAcceptor.php',
+            here we add custom filepicker only to Image dialog
+        */
+        file_picker_types: 'image',
+        /* and here's our custom image picker*/
+        file_picker_callback: function (cb, value, meta) {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+
+            /*
+            Note: In modern browsers input[type="file"] is functional without
+            even adding it to the DOM, but that might not be the case in some older
+            or quirky browsers like IE, so you might want to add it to the DOM
+            just in case, and visually hide it. And do not forget do remove it
+            once you do not need it anymore.
+            */
+            input.onchange = function () {
+                var file = this.files[0];
+
+                var reader = new FileReader();
+                reader.onload = function () {
+                    /*
+                    Note: Now we need to register the blob in TinyMCEs image blob
+                    registry. In the next release this part hopefully won't be
+                    necessary, as we are looking to handle it internally.
+                    */
+                    var id = 'blobid' + (new Date()).getTime();
+                    var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+                    var base64 = reader.result.split(',')[1];
+                    var blobInfo = blobCache.create(id, file, base64);
+                    blobCache.add(blobInfo);
+
+                    /* call the callback and populate the Title field with the file name */
+                    cb(blobInfo.blobUri(), { title: file.name });
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        },
+        /*** image upload ***/
+        
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+    });
+});
+</script>
+
 </head>
 <body>
 
@@ -31,7 +112,7 @@
 
 <div class="container">
 	<div id="contents">			<%-- onsubmit : 스크립트 함수를 실행하여 해당 함수의 결과 값이 true이면 form을 submit함 유효성 검사할 때 주로 사용된다. --%>
-		<form action="${actionUrl}" method="post" id="frm" name="frm" onsubmit="return regist()">
+		<form action="${actionUrl}" method="post" id="frm" name="frm" onsubmit="return regist()" enctype="multipart/form-data">
 			<input type="hidden" name="boardId" value="${result.boardId}"/>
 			
 			<table class="chart2">
@@ -77,6 +158,12 @@
 						<th scope="row">내용</th>
 						<td><%-- textarea태그는 한줄로 쓰는 것과 줄 변환해서 쓰는 것은 차이가 크다. textarea태그 안의 enter키,tap태까지 모두 입력되기 때문이다. --%>
 							<textarea id="boardCn" name="boardCn" rows="15" title="내용입력"><c:out value="${result.boardCn}"/></textarea>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">파일첨부</th>
+						<td>
+							<input type="file" name="file_1/">
 						</td>
 					</tr>
 				</tbody>
@@ -129,6 +216,11 @@
 			alert("제목을 입력해주세요.");
 			return false;
 		}
+	
+		//에디터 내용 저장
+		$("#boardCn").val(tinymce.activeEditor.getContent());
+		//이렇게 별도로 저장하는 문구가 필요하며 마찬가지로 에디터 내용을 찾아오는 것이 필요하다.
+	
 	}
 	
 	</script>
