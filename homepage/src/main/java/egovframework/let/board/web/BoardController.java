@@ -169,8 +169,9 @@ public class BoardController {
 		List<FileVO> result = null;
 		String atchFileId= "";
 		
+		//첨부파일 아이디는 로그인 계정마다 하나가 아니라 게시글마다 하나인가 ? ㅇㅇ 첨부파일id는 게시글당 1개 부여
 		final Map<String, MultipartFile> files = multiRequest.getFileMap();
-		if(!files.isEmpty()) {
+		if(!files.isEmpty()) {//등록될 게시글의 첨부파일 유무를 검사하는 if문
 			result = fileUtil.parseFileInf(files, "BOARD_", 0, "", "board.fileStorePath");
 			atchFileId = fileMngService.insertFileInfs(result);
 		}
@@ -210,6 +211,24 @@ public class BoardController {
 		else if("admin".equals(user.getId())) {
 			boardVO.setMngAt("Y");
 		}
+		
+		String atchFileId = boardVO.getAtchFileId();
+		final Map<String, MultipartFile> files = multiRequest.getFileMap();
+		if(!files.isEmpty()) {
+			if(EgovStringUtil.isEmpty(atchFileId)) {
+				List<FileVO> result = fileUtil.parseFileInf(files, "BOARD_", 0, "", "board.fileStorePath");
+				atchFileId = fileMngService.insertFileInfs(result);
+				boardVO.setAtchFileId(atchFileId);				
+			}
+			else {
+				FileVO fvo = new FileVO();
+				fvo.setAtchFileId(atchFileId);
+				int cnt = fileMngService.getMaxFileSN(fvo);
+				List<FileVO> _result = fileUtil.parseFileInf(files, "BOARD_", cnt, atchFileId, "board.fileStorePath");
+				fileMngService.updateFileInfs(_result);
+			}
+		}
+		
 		
 		boardVO.setUserId(user.getId());
 		

@@ -77,7 +77,9 @@ public class EgovFileMngController {
     @RequestMapping("/cmm/fms/selectFileInfsForUpdate.do")
     public String selectFileInfsForUpdate(@ModelAttribute("searchVO") FileVO fileVO, @RequestParam Map<String, Object> commandMap,
 	    ModelMap model) throws Exception {
-
+    	
+    System.out.println("/cmm/fms/selectFileInfsForUpdate.do 컨트롤 호출");	
+    	
 	String atchFileId = (String)commandMap.get("param_atchFileId");
 
 	fileVO.setAtchFileId(atchFileId);
@@ -106,7 +108,9 @@ public class EgovFileMngController {
     public String deleteFileInf(@ModelAttribute("searchVO") FileVO fileVO, @RequestParam("returnUrl") String returnUrl,
 	    HttpServletRequest request,
 	    ModelMap model) throws Exception {
-
+    	
+    System.out.println("/cmm/fms/deleteFileInfs.do 컨트롤 호출");
+    	
 	Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
 
 	if (isAuthenticated) {
@@ -145,6 +149,8 @@ public class EgovFileMngController {
     public String selectImageFileInfs(@ModelAttribute("searchVO") FileVO fileVO, @RequestParam Map<String, Object> commandMap,
 	    ModelMap model) throws Exception {
 
+    System.out.println("/cmm/fms/selectImageFileInfs.do 컨트롤 호출");
+    	
 	String atchFileId = (String)commandMap.get("atchFileId");
 
 	fileVO.setAtchFileId(atchFileId);

@@ -103,6 +103,13 @@
 									<%--<c:forEach>의 varStatus="변수명" 속성: forEach의 변수. 각 forEach마다 다른 이름이어야한다.  --%>
 								</td>
 								<td class="tit">
+									<c:if test="${not empty result.atchFileNm}">
+										<c:url var="thumbUrl" value="/cmm/fms/getThumbImage.do">
+											<c:param name="thumbYn" value="Y"/>
+											<c:param name="atchFileNm" value="${result.atchFileNm}"/>
+										</c:url>
+										<img src="${thumbUrl}" alt="썸네일">
+									</c:if>
 									<c:url var="viewUrl" value="/board/select.do${_BASE_PARAM}">
 										<c:param name="boardId" value="${result.boardId}"/>
 										<c:param name="pageIndex" value="${searchVO.pageIndex}"/>

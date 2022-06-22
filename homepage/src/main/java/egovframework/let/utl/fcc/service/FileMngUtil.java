@@ -36,7 +36,7 @@ public class FileMngUtil {
 									 String atchFileId, //첨부파일 아이디
 									 String storePath //저장 경로
 									 ) throws Exception{
-		int fileKey= fileKeyParam;
+		int fileKey= fileKeyParam; //첨부파일로 받은 파일리스트의 인덱스
 		
 		//파일 저장경로
 		String storePathString="";
@@ -53,10 +53,10 @@ public class FileMngUtil {
 		
 		//첨부파일ID 생성 및 업데이트 여부
 		if("".equals(atchFileId) || atchFileId==null) {
-			atchFileIdString= idgenService.getNextStringId(); //기존의 아이디를 사용
+			atchFileIdString= idgenService.getNextStringId(); //첨부파일 아이디를 새로 생성 
 		}
 		else {
-			atchFileIdString= atchFileId; //첨부파일 아이디를 새로 생성
+			atchFileIdString= atchFileId; //기존의 아이디를 사용
 		}
 		
 		//폴더경로 설정		 //File: java.io

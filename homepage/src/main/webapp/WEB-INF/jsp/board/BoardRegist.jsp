@@ -54,7 +54,7 @@ $(function(){
             images_upload_url: 'postAcceptor.php',
             here we add custom filepicker only to Image dialog
         */
-        file_picker_types: 'image',
+         picker_types: 'image',
         /* and here's our custom image picker*/
         file_picker_callback: function (cb, value, meta) {
             var input = document.createElement('input');
@@ -114,6 +114,7 @@ $(function(){
 	<div id="contents">			<%-- onsubmit : 스크립트 함수를 실행하여 해당 함수의 결과 값이 true이면 form을 submit함 유효성 검사할 때 주로 사용된다. --%>
 		<form action="${actionUrl}" method="post" id="frm" name="frm" onsubmit="return regist()" enctype="multipart/form-data">
 			<input type="hidden" name="boardId" value="${result.boardId}"/>
+			<input type="hidden" name="returnUrl" value="/board/boardRegist.do"/> <%--첨부파일 목록 수정 후 돌아올 주소 --%>
 			
 			<table class="chart2">
 				<caption>게시글 작성</caption> <%-- caption : 표의 정보(설명글) : 장애인들을 위해 사용되며 상세하게 기록되어야한다. --%>
@@ -160,10 +161,24 @@ $(function(){
 							<textarea id="boardCn" name="boardCn" rows="15" title="내용입력"><c:out value="${result.boardCn}"/></textarea>
 						</td>
 					</tr>
+					<c:if test="${not empty result.atchFileId}">
+						<tr>
+							<th scope="row">기존<br>첨부파일목록</th>
+							<td>
+								<c:import url="/cmm/fms/selectFileInfsForUpdate.do" charEncoding="utf-8">
+									<c:param name="param_atchFileId" value="${result.atchFileId}"/>
+								</c:import>
+							</td>
+						</tr>
+					</c:if>
 					<tr>
 						<th scope="row">파일첨부</th>
 						<td>
-							<input type="file" name="file_1/">
+							<input type="file" name="file_1/"><br>
+							<input type="file" name="file_2/"><br>
+							<input type="file" name="file_3/"><br>
+							<input type="file" name="file_4/"><br>
+							<input type="file" name="file_5/">
 						</td>
 					</tr>
 				</tbody>
