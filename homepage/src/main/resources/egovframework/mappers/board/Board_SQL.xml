@@ -79,14 +79,14 @@
 					<if test='searchCondition != null and searchCondition != ""'>
 						<choose>
 							<when test='searchCondition == "0"'>
-								AND A.BOARD_SJ LIKE CONCAT('%',#{serchKeyword},'%')
+								AND A.BOARD_SJ LIKE CONCAT('%',#{searchKeyword},'%')
 								<!-- #{}변수로 값을 넣어야해서 CONCAT을 이용하여 하나의 문자열로 만듬 -->
 							</when>
 							<when test='searchCondition == "1"'>
-								AND A.BOARD_CN LIKE CONCAT('%',#{serchKeyword},'%')
+								AND A.BOARD_CN LIKE CONCAT('%',#{searchKeyword},'%')
 							</when>
 							<when test='searchCondition == "2"'>
-								AND A.FRST_REGISTER_ID LIKE CONCAT('%',#{serchKeyword},'%')
+								AND A.FRST_REGISTER_ID LIKE CONCAT('%',#{searchKeyword},'%')
 							<!-- LIKE '%000%' 으로 양 옆에 %를 붙여 사용하면 검색 정확도는 높으나 쿼리 처리가 매우 느림 -->
 							</when>
 						</choose>

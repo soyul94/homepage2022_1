@@ -75,7 +75,7 @@
 						<a href="${delUrl}" id="btn-del" class="btn"><i class="ico-del"></i> 삭제</a>
 					</c:when>
 					<c:otherwise>
-						<a gref="none" id="btn-reg" class="btn spot">등록</a>
+						<a href="none" id="btn-reg" class="btn spot">등록</a>
 					</c:otherwise>
 				</c:choose>
 					<c:url var="listUrl" value="/board/selectList.do${_BASE_PARAM}" />

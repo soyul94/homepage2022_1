@@ -62,7 +62,7 @@ public class FileMngUtil {
 		//폴더경로 설정		 //File: java.io
 		File saveFolder= new File(storePathString); 
 		if(!saveFolder.exists() || saveFolder.isFile()) { //지정한 경로가 존재하지 않는다면 경로에 맞게 폴더를 생성함
-			saveFolder.mkdir();
+			saveFolder.mkdirs();
 		}
 		
 		//파일변수    //Iterator, Entry : java.util
@@ -102,6 +102,7 @@ public class FileMngUtil {
 			if(!"".equals(orginFileName)) {
 				filePath = storePathString + File.separator + newName;
 				//		  	 저장위치				폴더 구분자 		     새로운 이름
+				System.out.println(filePath);
 				file.transferTo(new File(filePath));// 저장함
 			}
 			fvo = new FileVO();

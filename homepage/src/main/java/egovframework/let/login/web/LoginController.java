@@ -24,7 +24,7 @@ public class LoginController {
 	EgovMessageSource egovMessageSource;
 	
 	@RequestMapping(value="/login/actionLogin.do")
-	public String actionLigin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, ModelMap model) throws Exception{
+	public String actionLogin(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, ModelMap model) throws Exception{
 		
 		LoginVO resultVO = loginService.actionLogin(loginVO); //로그인한 사람의 상세정보를 조회함.
 		//조회한 상세정보가 비어있지 않다면 로그인한 것이므로 그 정보들을 resultVO에 저장함
@@ -47,7 +47,7 @@ public class LoginController {
 	// forward는 현재 컨트롤러에서 attribute한 속성들을 그대로 보내는 반면 redirect는 재요청이라 정보가 가지 않아 주소에 함께 실어 보내야함.
 	
 	@RequestMapping(value="/login/actionLogout.do")
-	public String actionLigout(HttpServletRequest request, ModelMap model) throws Exception{
+	public String actionLogout(HttpServletRequest request, ModelMap model) throws Exception{
 //		로그아웃에는 두가지 방식이 있고 정책에 따라 해야한다
 		
 //		1. /login/actionLogin.do에서 저장한 세션을 지워버림. 로그인 정보만 날리는 것

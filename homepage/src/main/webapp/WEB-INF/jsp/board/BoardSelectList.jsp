@@ -30,7 +30,6 @@
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
-
 <div class="container">
 	<div id="contents">
 		<%--검색영역 --%>
@@ -41,8 +40,8 @@
 					<label for="ftext" class="hdn">검색분류 선택</label>
 					<select name="searchCondition" id="ftext">
 						<option value="0" <c:if test="${searchVO.searchCondition eq '0'}">selected="selected"</c:if>>제목</option>
-						<option value="0" <c:if test="${searchVO.searchCondition eq '1'}">selected="selected"</c:if>>내용</option>
-						<option value="0" <c:if test="${searchVO.searchCondition eq '2'}">selected="selected"</c:if>>작성자</option>
+						<option value="1" <c:if test="${searchVO.searchCondition eq '1'}">selected="selected"</c:if>>내용</option>
+						<option value="2" <c:if test="${searchVO.searchCondition eq '2'}">selected="selected"</c:if>>작성자</option>
 					</select>
 					<label for="inp_text" class="hdn">검색어 입력</label>
 					<input name="searchKeyword" value="<c:out value="${searchVO.searchKeyword}"/>" type="text" class="inp_s" id="inp_text"/>
