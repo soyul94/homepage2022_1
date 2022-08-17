@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.let.crud2.service.impl.Crud2Mapper"> <!-- 이 mapper namespace가 찾아가는 경로이므로 꼭 정확히 명시해야한다. -->
+
+	<resultMap id="Crud2VO" type="egovframework.let.crud2.service.Crud2VO">
+		<result property="crudId" column="CRUD_ID"/>
+		<result property="crudSj" column="CRUD_SJ"/>
+		<result property="crudCn" column="CRUD_CN"/>
+		<result property="userNm" column="USER_NM"/>
+		<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM"/>
+	</resultMap>
+	
+	<select id="selectCrud2" resultMap="Crud2VO">
+		SELECT CRUD_ID, CRUD_SJ, CRUD_CN, USER_NM, 
+			   FRST_REGIST_PNTTM
+		FROM LETCRUD2 WHERE CRUD_ID=#{crudId}
+	</select>
+	
+	<select id="selectCrud2List" resultType="egovMap">
+		SELECT CRUD_ID, CRUD_SJ, CRUD_CN, USER_NM, FRST_REGIST_PNTTM
+		FROM LETCRUD2 ORDER BY CRUD_ID DESC LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	</select> 
+	
+	<select id="selectCrud2ListCnt" resultType="java.lang.Integer">
+		SELECT COUNT(*) CNT FROM LETCRUD2
+	</select>
+	
+	<insert id="insertCrud2" parameterType="egovframework.let.crud2.service.Crud2VO"> 
+		INSERT INTO LETCRUD2(CRUD_ID,CRUD_SJ,CRUD_CN,USER_NM,FRST_REGIST_PNTTM) 
+		VALUES(#{crudId},#{crudSj},#{crudCn},#{userNm},SYSDATE())
+	</insert>
+	
+	<update id="updateCrud2" parameterType="egovframework.let.crud2.service.Crud2VO">
+		UPDATE LETCRUD2 
+		SET CRUD_SJ=#{crudSj}, CRUD_CN=#{crudCn}, USER_NM=#{userNm}, FRST_REGIST_PNTTM=SYSDATE() 
+		WHERE CRUD_ID=#{crudId}
+	</update>
+	
+	<delete id="deleteCrud2" parameterType="egovframework.let.crud2.service.Crud2VO">
+		DELETE FROM LETCRUD2 WHERE CRUD_ID=#{crudId}
+	</delete>
+
+</mapper>

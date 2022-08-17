@@ -2000,7 +2000,7 @@
         <property name="cipers" value="5" />
         <property name="fillChar" value="0" />
     </bean>   
-    <!-- TEMP END-->
+    <!-- btCRUD END-->
     
     <!-- BOARD의 idgen START (추가한 부분)-->          
     <bean name="egovBoardIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
@@ -2015,6 +2015,21 @@
         <property name="cipers" value="14" />
         <property name="fillChar" value="0" />
     </bean>   
-    <!-- TEMP END-->
+    <!-- BOARD END-->
+    
+    <!-- JOIN의 idgen START (추가한 부분)-->          
+    <bean name="joinIdGnrService" class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl" destroy-method="destroy">
+        <property name="dataSource" ref="egov.dataSource" />
+        <property name="strategy"   ref="joinStrategy" />
+        <property name="blockSize"  value="10"/>
+        <property name="table"      value="IDS"/>
+        <property name="tableName"  value="ESNTL_ID"/>
+    </bean>
+    <bean name="joinStrategy" class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+        <property name="prefix" value="ESNTL_" />
+        <property name="cipers" value="14" />
+        <property name="fillChar" value="0" />
+    </bean>   
+    <!-- JOIN END-->
     
 </beans>
