@@ -29,19 +29,19 @@ public class JoinController {
 	EgovMessageSource egovMessageSource;
 	
 	//회원구분
-	@RequestMapping(value="memberType.do")
+	@RequestMapping(value="/memberType.do")
 	public String memberType(@ModelAttribute("searchVO") JoinVO vo, ModelMap model) throws Exception {
 		return "join/MemberType";
 	}
 	
 	//회원등록 폼
-	@RequestMapping(value="memberRegist.do")
+	@RequestMapping(value="/memberRegist.do")
 	public String memberRegist(@ModelAttribute("searchVO") JoinVO vo, HttpServletRequest request, ModelMap model) throws Exception {
 		return "join/MemberRegist";
 	}
 	
 	//회원가입
-	@RequestMapping(value="memberRegist.do")
+	@RequestMapping(value="/insertMember.do")
 	public String insertMember(@ModelAttribute("searchVO") JoinVO vo, ModelMap model) throws Exception {
 		
 		if(!EgovStringUtil.isEmpty(vo.getLoginType())) {
@@ -73,7 +73,7 @@ public class JoinController {
 	}
 	
 	//아이디 중복 체크
-	@RequestMapping(value="duplicateCheck.do")
+	@RequestMapping(value="/duplicateCheck.do")
 	public void duplicateCheck(@ModelAttribute("searchVO") JoinVO vo, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
 		String successYn = "Y";
 		String message = "성공";
@@ -90,7 +90,7 @@ public class JoinController {
 		jo.put("successYn",successYn);
 		jo.put("message",message);
 		
-		PrintWriter printwriter = response.getWriter();
+		PrintWriter printwriter = response.getWriter(); // 데이터 뿌려줌
 		printwriter.println(jo.toString());
 		printwriter.flush();
 		printwriter.close();
